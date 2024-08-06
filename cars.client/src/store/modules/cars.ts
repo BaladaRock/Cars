@@ -23,19 +23,33 @@ const getters = {
 };
 
 const actions = {
-  async fetchCars({ commit }: ActionContext<State, any>) {
-    const response = await axios.get<Car[]>('/cars');
-    commit('setCars', response.data);
-  },
-  async addCar({ commit }: ActionContext<State, any>, car: Car) {
-    const response = await axios.post<Car>('/cars', car);
-    commit('newCar', response.data);
-  },
-  async deleteCar({ commit }: ActionContext<State, any>, serialNumber: string) {
-    await axios.delete(`/cars/${serialNumber}`);
-    commit('removeCar', serialNumber);
-  },
-};
+    async fetchCars({ commit }: ActionContext<State, any>) {
+      console.log('Axios baseURL in fetchCars:', axios.defaults.baseURL);
+      try {
+        const response = await axios.get<Car[]>('/api/cars');
+        commit('setCars', response.data);
+      } catch (error) {
+        console.error('Error fetching cars:', error);
+      }
+    },
+    async addCar({ commit }: ActionContext<State, any>, car: Car) {
+      try {
+        const response = await axios.post<Car>('/api/cars', car);
+        commit('newCar', response.data);
+      } catch (error) {
+        console.error('Error adding car:', error);
+      }
+    },
+    async deleteCar({ commit }: ActionContext<State, any>, serialNumber: string) {
+      try {
+        await axios.delete(`/api/cars/${serialNumber}`);
+        commit('removeCar', serialNumber);
+      } catch (error) {
+        console.error('Error deleting car:', error);
+      }
+    },
+  };
+  
 
 const mutations = {
   setCars: (state: State, cars: Car[]) => (state.cars = cars),

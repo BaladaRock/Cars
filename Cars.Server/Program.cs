@@ -2,6 +2,7 @@
 using Cars.Server.Context;
 using Cars.Server.Repositories.Contracts;
 using Cars.Server.Repositories;
+using System.Text.Json.Serialization;
 
 namespace Cars.Server
 {
@@ -21,10 +22,24 @@ namespace Cars.Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Used this to make sure the enum members are serialized as string
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
             var app = builder.Build();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            app.UseCors(options =>
+                options.WithOrigins("http://localhost:5173")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            builder.Services.AddCors();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -36,7 +51,6 @@ namespace Cars.Server
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

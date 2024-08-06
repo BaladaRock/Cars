@@ -21,13 +21,9 @@
     },
     methods: {
       ...mapActions(['fetchCars', 'deleteCar']),
-      logCars() {
-        console.log(this.allCars);
-      }
     },
     created() {
       this.fetchCars();
-      this.logCars(); // Log here to check data
     },
   });
   </script>
