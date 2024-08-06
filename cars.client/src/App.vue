@@ -6,14 +6,12 @@ import HomeView from './views/HomeView.vue';
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
+  </header>
+  
+  <main>
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
       <HomeView></HomeView>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
   </main>
 </template>
 

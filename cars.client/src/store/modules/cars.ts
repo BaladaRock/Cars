@@ -24,15 +24,15 @@ const getters = {
 
 const actions = {
   async fetchCars({ commit }: ActionContext<State, any>) {
-    const response = await axios.get<Car[]>('/api/cars');
+    const response = await axios.get<Car[]>('/cars');
     commit('setCars', response.data);
   },
   async addCar({ commit }: ActionContext<State, any>, car: Car) {
-    const response = await axios.post<Car>('/api/cars', car);
+    const response = await axios.post<Car>('/cars', car);
     commit('newCar', response.data);
   },
   async deleteCar({ commit }: ActionContext<State, any>, serialNumber: string) {
-    await axios.delete(`/api/cars/${serialNumber}`);
+    await axios.delete(`/cars/${serialNumber}`);
     commit('removeCar', serialNumber);
   },
 };

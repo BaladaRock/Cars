@@ -10,7 +10,7 @@
   <script lang="ts">
   import { defineComponent } from 'vue';
   import { mapGetters, mapActions } from 'vuex';
-  import Car from './Car.vue';
+  import Car from './CarComponent.vue';
   
   export default defineComponent({
     components: {
@@ -21,9 +21,17 @@
     },
     methods: {
       ...mapActions(['fetchCars', 'deleteCar']),
+      logCars() {
+        console.log(this.allCars);
+      }
     },
     created() {
       this.fetchCars();
+      this.logCars(); // Log here to check data
     },
   });
   </script>
+  
+  <style scoped>
+  /* Specific styling */
+  </style>
