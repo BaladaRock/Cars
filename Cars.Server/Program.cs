@@ -1,4 +1,8 @@
 
+using Cars.Server.Context;
+using Cars.Server.Repositories.Contracts;
+using Cars.Server.Repositories;
+
 namespace Cars.Server
 {
     public class Program
@@ -8,6 +12,9 @@ namespace Cars.Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddSingleton<CarContext>();
+            builder.Services.AddScoped<ICarRepository, CarRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

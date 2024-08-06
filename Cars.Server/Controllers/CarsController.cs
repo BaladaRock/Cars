@@ -1,12 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cars.Server.Repositories.Contracts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Cars.Server.Controllers
 {
-    public class CarsController : Controller
+
+    [Route("/cars")]
+    [ApiController]
+    public class CarsController(ICarRepository carRepository) : ControllerBase
     {
-        public IActionResult Index()
+        private readonly ICarRepository _carRepository = carRepository;
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCars()
         {
-            return View();
+            try
+            {
+                return Ok(await _carRepository.GetAllCars());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

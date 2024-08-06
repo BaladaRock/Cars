@@ -2,7 +2,7 @@
 using Cars.Server.Models;
 using Cars.Server.Repositories.Contracts;
 
-namespace Cars.Server.Repositories.Implementations
+namespace Cars.Server.Repositories
 {
     public class BrandRepository : IBrandRepository
     {
