@@ -22,5 +22,26 @@ namespace Cars.Server.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("{serialNumber}", Name = "GetCarBySerialNumber")]
+        public async Task<IActionResult> GetCarBySerialNumber(string? serialNumber)
+        {
+            try
+            {
+                // Encode serial number to protect from requests with special characters
+                var encodedSerialNumber = Uri.EscapeDataString(serialNumber ?? "");
+
+                var car = await _carRepository.GetCarBySerialNumber(serialNumber);
+                if (car == null)
+                    return NotFound();
+
+                return Ok(car);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
     }
 }

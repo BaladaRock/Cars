@@ -28,9 +28,13 @@ namespace Cars.Server.Repositories
             return await connection.QueryAsync<Car>(queryCars);
         }
 
-        public Task<Car?> GetCarBySerialNumber(string? serialNumber)
+        public async Task<Car?> GetCarBySerialNumber(string? serialNumber)
         {
-            throw new NotImplementedException();
+            var queryCar = "SELECT Brand, ModelYear, Model, Fuel, Color, SerialNumber FROM [dbo].[Models]" +
+                   "WHERE SerialNumber = @serialNumber";
+
+            using var connection = _context.CreateConnection();
+            return await connection.QuerySingleOrDefaultAsync<Car>(queryCar, new {serialNumber});
         }
 
         public Task<IEnumerable<Car?>> GetCarsByBrand(Brand brandName)

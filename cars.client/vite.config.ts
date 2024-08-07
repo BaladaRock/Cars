@@ -42,7 +42,7 @@ export default defineConfig({
         proxy: {
             '^/api': {
                 target: 'http://localhost:5274',
-                changeOrigin: true, // Important
+                changeOrigin: true, // Important, used to modify the "Origin" header
                 secure: true //Set to true if your backend utilizes HTTPS
             }
         },
