@@ -9,6 +9,7 @@
     <p>Serial Number: {{ selectedCar.serialNumber }}</p>
 
     <button @click="goBack">Back to Home</button>
+    <CarEditForm :car="selectedCar" @update-success="goBack" />
   </div>
   <div v-else>
     <p>Loading...</p>
@@ -19,8 +20,12 @@
 import { defineComponent, onMounted, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
+import CarEditForm from '@/components/CarEditForm.vue';
 
 export default defineComponent({
+  components: {
+    CarEditForm
+  },
   setup() {
     const store = useStore();
     const route = useRoute();
@@ -30,22 +35,11 @@ export default defineComponent({
     onMounted(() => {
       if (serialNumber) {
         store.dispatch('fetchCar', serialNumber);
-        // Check right after fetching
-        const car = store.state.selectedCar;
-        console.log('On mounted test:', car); // Check after dispatch
-      } else {
-        console.error('Serial number is undefined');
       }
     });
 
     const selectedCar = computed(() => store.getters.selectedCar);
 
-    // Watch selectedCar, to make sure any change in the state of 'selectedCar' is captured as soon as it occurs
-    watch(selectedCar, (newValue) => {
-      console.log('selectedCar updated:', newValue);
-    });
-
-    // Go back to Home page (using router)
     const goBack = () => {
       router.push({ name: 'home' });
     };

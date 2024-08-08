@@ -1,4 +1,3 @@
-
 using Cars.Server.Context;
 using Cars.Server.Repositories.Contracts;
 using Cars.Server.Repositories;
@@ -18,7 +17,6 @@ namespace Cars.Server
             builder.Services.AddScoped<ICarRepository, CarRepository>();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -28,20 +26,27 @@ namespace Cars.Server
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            // Configure CORS to allow only specific origins
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin", builder =>
+                {
+                    builder.WithOrigins("https://localhost:5173")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            app.UseCors(options =>
-                options.WithOrigins("http://localhost:5173")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            builder.Services.AddCors();
+            // Ensure CORS is applied before any other middleware that might handle requests
+            //app.UseCors("AllowSpecificOrigin");
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -49,11 +54,9 @@ namespace Cars.Server
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
 
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
 
             app.Run();

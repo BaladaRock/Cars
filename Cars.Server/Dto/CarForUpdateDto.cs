@@ -4,6 +4,8 @@ namespace Cars.Server.Dto
 {
     public class CarForUpdateDto
     {
+        public string? Brand { get; set; }
+
         public int ModelYear { get; set; }
 
         public string? Model { get; set; }

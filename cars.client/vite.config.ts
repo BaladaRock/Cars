@@ -42,10 +42,10 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/api': {
+            '/api/cars/': {
                 target: 'http://localhost:5274', // Server URL
                 changeOrigin: true, // Important
-                secure: false // Set to true if your backend uses HTTPS
+                secure: true // Set to true if your backend uses HTTPS
             }
         },
         port: 5173, // Client port

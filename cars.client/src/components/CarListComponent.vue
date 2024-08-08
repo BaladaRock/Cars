@@ -26,7 +26,6 @@ export default defineComponent({
   methods: {
     ...mapActions(['fetchCars', 'deleteCar']),
     viewCarDetails(serialNumber: string) {
-      console.log('test go to cardetails method', serialNumber);
       this.$router.push({ name: 'car-detail', params: { serialNumber } });
     }
   },

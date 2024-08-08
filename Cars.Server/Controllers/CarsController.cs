@@ -1,4 +1,7 @@
-﻿using Cars.Server.Repositories.Contracts;
+﻿using Cars.Server.Dto;
+using Cars.Server.Helpers;
+using Cars.Server.Repositories.Contracts;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cars.Server.Controllers
@@ -42,6 +45,29 @@ namespace Cars.Server.Controllers
                 return StatusCode(500, ex.Message);
             }
 
+        }
+
+        [HttpPut("{serialNumber}", Name = "UpdateCar")]
+        public async Task<IActionResult> UpdateCar(string? serialNumber, [FromBody] CarForUpdateDto car)
+        {
+            try
+            {
+                var carToUpdate = await _carRepository.GetCarBySerialNumber(serialNumber);
+                if (carToUpdate == null)
+                    return NotFound();
+
+                var updatedCar = await _carRepository.UpdateCar(serialNumber, car);
+
+                return Ok(updatedCar);
+            }
+            catch (Exception ex) when (ex is DuplicateSerialNumberException)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
