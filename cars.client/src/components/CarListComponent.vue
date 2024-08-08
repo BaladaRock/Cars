@@ -3,8 +3,8 @@
     <h2>Cars</h2>
     <div v-for="car in allCars" :key="car.serialNumber">
       <Car :car="car" @delete-car="deleteCar" />
-      <button type="button" @click="goToCarDetails(car.serialNumber)">
-        Test here
+      <button type="button" @click="viewCarDetails(car.serialNumber)">
+        See car
       </button>
     </div>
   </div>
@@ -25,7 +25,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions(['fetchCars', 'deleteCar']),
-    goToCarDetails(serialNumber: string) {
+    viewCarDetails(serialNumber: string) {
       console.log('test go to cardetails method', serialNumber);
       this.$router.push({ name: 'car-detail', params: { serialNumber } });
     }
