@@ -59,15 +59,17 @@ const actions = {
       console.error('Error deleting car:', error);
     }
   },
-  async updateCar({ commit, dispatch }: ActionContext<State, any>, car: Car) {
+  async updateCar({ commit, dispatch }: ActionContext<State, any>, payload: { car: Car; serialNumberToUpdate: string }) {
     try {
-      await axios.put(`/api/cars/${car.serialNumber}`, car);
-      await dispatch('fetchCars');
-      commit('newCar', car);
+        const { car, serialNumberToUpdate } = payload;
+
+        await axios.put(`/api/cars/${serialNumberToUpdate}`, car);
+        await dispatch('fetchCars');
+        commit('newCar', car);
     } catch (error) {
-      console.error('Error updating car:', error);
+        console.error('Error updating car:', error);
     }
-  },
+},
 };
 
 const mutations = {

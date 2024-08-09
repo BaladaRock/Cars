@@ -29,12 +29,10 @@ namespace Cars.Server
             // Configure CORS to allow only specific origins
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin", builder =>
-                {
-                    builder.WithOrigins("https://localhost:5173")
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
+                options.AddPolicy("devCORSPolicy", p => {
+                    p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                }
+                );
             });
 
             var app = builder.Build();
