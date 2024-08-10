@@ -102,5 +102,23 @@ namespace Cars.Server.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpDelete("{serialNumber}")]
+        public async Task<IActionResult> DeleteCar(string? serialNumber)
+        {
+            try
+            {
+                var carToDelete = await _carRepository.GetCarBySerialNumber(serialNumber);
+                if (carToDelete == null)
+                    return NotFound();
+
+                await _carRepository.DeleteCar(serialNumber);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

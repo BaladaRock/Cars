@@ -15,21 +15,9 @@ namespace Cars.Server.Repositories
 
         public async Task<Car?> CreateCar(CarForCreateDto newCar)
         {
+            await ValidateCarAsync(newCar.SerialNumber, newCar.Fuel);
+
             using var connection = _context.CreateConnection();
-            var existingCar = await connection.QueryFirstOrDefaultAsync<Car>(
-                    "SELECT * FROM [dbo].[Models] WHERE SerialNumber = @NewSerialNumber",
-                    new { NewSerialNumber = newCar.SerialNumber });
-
-            if (existingCar != null)
-            {
-                throw new DuplicateSerialNumberException(newCar.SerialNumber!);
-            }
-
-            // Check the validity of the fuel type, sent via the request
-            if (!IsValidFuelType(newCar.Fuel))
-            {
-                throw new ArgumentException("Invalid fuel type");
-            }
 
             var queryInset = "INSERT INTO [dbo].[Models] (Brand, ModelYear, Model, Fuel, Color, SerialNumber)" +
                 " VALUES (@Brand, @ModelYear, @Model, @Fuel, @Color, @SerialNumber)" +
@@ -57,9 +45,12 @@ namespace Cars.Server.Repositories
             };
         }
 
-        public Task DeleteCar(string? serialNumber)
+        public async Task DeleteCar(string? serialNumber)
         {
-            throw new NotImplementedException();
+            var deleteQuery = "DELETE FROM [dbo].[Models] WHERE SerialNumber = @serialNumber";
+
+            using var connection = _context.CreateConnection();
+            await connection.ExecuteAsync(deleteQuery, new { serialNumber });
         }
 
         public async Task<IEnumerable<Car?>> GetAllCars()
@@ -86,26 +77,9 @@ namespace Cars.Server.Repositories
 
         public async Task<Car?> UpdateCar(string? serialNumber, CarForUpdateDto car)
         {
-            // Check the validity of the fuel type, sent via the request
-            if (!IsValidFuelType(car.Fuel))
-            {
-                throw new ArgumentException("Invalid fuel type");
-            }
+            await ValidateCarAsync(car.SerialNumber, car.Fuel, serialNumber);
 
             using var connection = _context.CreateConnection();
-
-            // If SerialNumber has been changed, validate its uniqueness
-            if (car.SerialNumber != serialNumber)
-            {
-                var existingCar = await connection.QueryFirstOrDefaultAsync<Car>(
-                    "SELECT * FROM [dbo].[Models] WHERE SerialNumber = @NewSerialNumber",
-                    new { NewSerialNumber = car.SerialNumber });
-
-                if (existingCar != null)
-                {
-                    throw new DuplicateSerialNumberException(car.SerialNumber!);
-                }
-            }
 
             var queryUpdate = "UPDATE [dbo].[Models] SET Brand = @Brand, ModelYear = @ModelYear, Model = @Model," +
                 " Fuel = @Fuel, Color = @Color, SerialNumber = @NewSerialNumber" +
@@ -125,5 +99,32 @@ namespace Cars.Server.Repositories
         }
 
         private static bool IsValidFuelType(FuelType fuel) => Enum.IsDefined(typeof(FuelType), fuel);
+
+        private async Task ValidateCarAsync(string? serialNumber, FuelType fuel, string? originalSerialNumber = null)
+        {
+            ArgumentNullException.ThrowIfNull(serialNumber);
+
+            if (!IsValidFuelType(fuel))
+            {
+                throw new InvalidFuelTypeException();
+            }
+
+            if (originalSerialNumber == serialNumber)
+            {
+                return;
+            }
+
+            using var connection = _context.CreateConnection();
+            var existingCar = await connection.QueryFirstOrDefaultAsync<Car>(
+                "SELECT * FROM [dbo].[Models] WHERE SerialNumber = @NewSerialNumber",
+                new { NewSerialNumber = serialNumber });
+
+            if (existingCar == null)
+            {
+                return;
+            }
+
+            throw new DuplicateSerialNumberException(serialNumber!);
+        }
     }
 }
