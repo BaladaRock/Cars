@@ -48,6 +48,34 @@ namespace Cars.Server.Controllers
 
         }
 
+        [HttpPost()]
+        public async Task<IActionResult> CreateCar([FromBody] CarForCreateDto car)
+        {
+            try
+            {
+                var createdCar = await _carRepository.CreateCar(car);
+                return CreatedAtRoute("GetCarBySerialNumber",
+                    new
+                    {
+                        createdCar?.SerialNumber
+                    },
+                    createdCar
+                   );
+            }
+            catch (Exception ex) when (ex is DuplicateSerialNumberException)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex) when (ex is InvalidFuelTypeException)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut("{serialNumber}", Name = "UpdateCar")]
         public async Task<IActionResult> UpdateCar(string? serialNumber, [FromBody] CarForUpdateDto car)
         {

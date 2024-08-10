@@ -1,18 +1,22 @@
 <template>
-  <div v-if="selectedCar">
-    <h2>Car Details</h2>
-    <p>Brand: {{ selectedCar.brand }}</p>
-    <p>Model: {{ selectedCar.model }}</p>
-    <p>Year: {{ selectedCar.modelYear }}</p>
-    <p>Fuel: {{ selectedCar.fuel }}</p>
-    <p>Color: {{ selectedCar.color }}</p>
-    <p>Serial Number: {{ selectedCar.serialNumber }}</p>
+  <div class="car_details_edit_wrapper">
+    <div class="car_details" v-if="selectedCar">
+      <h2>Car Details</h2>
+      <p>Brand: {{ selectedCar.brand }}</p>
+      <p>Model: {{ selectedCar.model }}</p>
+      <p>Year: {{ selectedCar.modelYear }}</p>
+      <p>Fuel: {{ selectedCar.fuel }}</p>
+      <p>Color: {{ selectedCar.color }}</p>
+      <p>Serial Number: {{ selectedCar.serialNumber }}</p>
 
-    <button @click="goBack">Back to Home</button>
-    <CarEditForm :car="selectedCar" @update-success="goBack" :key="selectedCar.serialNumber"/>
-  </div>
-  <div v-else>
-    <p>Loading...</p>
+      <button @click="goBack">Back to Home</button>
+    </div>
+    <div class="car_edit_form_wrapper" v-if="selectedCar">
+      <CarEditForm :car="selectedCar" @update-success="goBack" :key="selectedCar.serialNumber" />
+    </div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </div>
 </template>
 
@@ -25,7 +29,7 @@ import ensureString from '@/helpers/carHelpers';
 
 export default defineComponent({
   components: {
-    CarEditForm
+    CarEditForm,
   },
   setup() {
     const store = useStore();
@@ -43,7 +47,7 @@ export default defineComponent({
       if (!serialNumber.value) {
         return;
       }
-      
+
       fetchCarData(ensureString(serialNumber.value));
     });
 
@@ -53,7 +57,6 @@ export default defineComponent({
         fetchCarData(ensureString(newSerialNumber));
       }
     );
-    
 
     const selectedCar = computed(() => store.getters.selectedCar);
 
@@ -70,21 +73,40 @@ export default defineComponent({
 </script>
 
 <style scoped>
-button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px 2px;
-  cursor: pointer;
-  border-radius: 5px;
+.car_details_edit_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 100%;
+  margin: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  gap: 2rem;
 }
 
-button:hover {
-  background-color: #45a049;
+.car_details {
+  flex: 1 1 45%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.car_edit_form_wrapper {
+  flex: 1 1 45%;
+}
+
+@media (max-width: 768px) {
+  .car_details_edit_wrapper {
+    flex-direction: column;
+  }
+
+  .car_details,
+  .car_edit_form_wrapper {
+    flex: 1 1 100%;
+    padding: 0.5rem;
+  }
 }
 </style>

@@ -13,9 +13,48 @@ namespace Cars.Server.Repositories
     {
         private readonly CarContext _context = context;
 
-        public Task<Car?> CreateCar(CarForCreateDto car)
+        public async Task<Car?> CreateCar(CarForCreateDto newCar)
         {
-            throw new NotImplementedException();
+            using var connection = _context.CreateConnection();
+            var existingCar = await connection.QueryFirstOrDefaultAsync<Car>(
+                    "SELECT * FROM [dbo].[Models] WHERE SerialNumber = @NewSerialNumber",
+                    new { NewSerialNumber = newCar.SerialNumber });
+
+            if (existingCar != null)
+            {
+                throw new DuplicateSerialNumberException(newCar.SerialNumber!);
+            }
+
+            // Check the validity of the fuel type, sent via the request
+            if (!IsValidFuelType(newCar.Fuel))
+            {
+                throw new ArgumentException("Invalid fuel type");
+            }
+
+            var queryInset = "INSERT INTO [dbo].[Models] (Brand, ModelYear, Model, Fuel, Color, SerialNumber)" +
+                " VALUES (@Brand, @ModelYear, @Model, @Fuel, @Color, @SerialNumber)" +
+                " SELECT CAST(SCOPE_IDENTITY() as NVARCHAR)";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Brand", newCar.Brand, DbType.String);
+            parameters.Add("ModelYear", newCar.ModelYear, DbType.Int32);
+            parameters.Add("Model", newCar.Model, DbType.String);
+            parameters.Add("Fuel", newCar.Fuel.ToString(), DbType.String);
+            parameters.Add("Color", newCar.Color, DbType.String);
+            parameters.Add("SerialNumber", newCar.SerialNumber, DbType.String);
+            parameters.Add("NewSerialNumber", newCar.SerialNumber, DbType.String);
+
+            var insertedId = await connection.QuerySingleAsync<Car>(queryInset, parameters);
+
+            return new Car
+            {
+                Brand = newCar.Brand,
+                ModelYear = newCar.ModelYear,
+                Model = newCar.Model,
+                Fuel = newCar.Fuel,
+                Color = newCar.Color,
+                SerialNumber = newCar.SerialNumber
+            };
         }
 
         public Task DeleteCar(string? serialNumber)
@@ -47,13 +86,13 @@ namespace Cars.Server.Repositories
 
         public async Task<Car?> UpdateCar(string? serialNumber, CarForUpdateDto car)
         {
-            using var connection = _context.CreateConnection();
-
             // Check the validity of the fuel type, sent via the request
             if (!IsValidFuelType(car.Fuel))
             {
                 throw new ArgumentException("Invalid fuel type");
             }
+
+            using var connection = _context.CreateConnection();
 
             // If SerialNumber has been changed, validate its uniqueness
             if (car.SerialNumber != serialNumber)

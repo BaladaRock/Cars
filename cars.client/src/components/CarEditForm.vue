@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="updateCarDetails">
+    <form @submit.prevent="updateCarDetails" class="car_edit_form">
         <div>
             <label for="brand">Brand:</label>
             <input id="brand" v-model="editedCar.brand" />
@@ -38,17 +38,15 @@ export default defineComponent({
     props: {
         car: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
     setup(props, { emit }) {
         const store = useStore();
         const editedCar = ref({ ...props.car });
 
-        // Need to store the old serial number, in case the end user wants to update it via the form
         const originalSerialNumber = ref(props.car.serialNumber);
 
-        // Watch for changes in the `car` prop and update `editedCar`
         watch(
             () => props.car,
             (newCar) => {
@@ -60,12 +58,11 @@ export default defineComponent({
 
         const updateCarDetails = async () => {
             try {
-                let urlSerialNumber = originalSerialNumber.value;
+                const urlSerialNumber = originalSerialNumber.value;
 
-                // Perform the update
                 const response = await store.dispatch('updateCar', {
                     car: { ...editedCar.value },
-                    serialNumberToUpdate: urlSerialNumber
+                    serialNumberToUpdate: urlSerialNumber,
                 });
 
                 if (response.status === 200) {
@@ -74,29 +71,71 @@ export default defineComponent({
                         alert('Car details updated successfully!');
                         router.push({
                             name: 'car-detail',
-                            params: { serialNumber: editedCar.value.serialNumber }
+                            params: { serialNumber: editedCar.value.serialNumber },
                         });
-                    }
-                    else {
+                    } else {
                         emit('update-succes');
                         alert('Car details updated successfully!');
 
-                        // // Update the original serial number reference
                         originalSerialNumber.value = editedCar.value.serialNumber;
                     }
                 }
             } catch (error) {
-                const alertMessage = axios.isAxiosError(error) && error.response?.status === 409
-                    ? 'Serial number already exists. Please choose a different one.'
-                    : 'An error occurred while updating car details.';
+                const alertMessage =
+                    axios.isAxiosError(error) && error.response?.status === 409
+                        ? 'Serial number already exists. Please choose a different one.'
+                        : 'An error occurred while updating car details.';
                 alert(alertMessage);
             }
         };
 
         return {
             editedCar,
-            updateCarDetails
+            updateCarDetails,
         };
-    }
+    },
 });
 </script>
+
+<style scoped>
+.car_edit_form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.car_edit_form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.car_edit_form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.car_edit_form button {
+    padding: 10px;
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.car_edit_form button:hover {
+    background-color: #45a049;
+}
+</style>

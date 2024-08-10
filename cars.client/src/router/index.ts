@@ -13,7 +13,13 @@ const routes = [
     name: 'car-detail',
     component: CarDetailsView,
     props: true
-  }
+  },
+  {
+    path: '/api/cars/newCar',
+    name: 'new-car',
+    component: NewCarView,
+    props: true
+  },
 ];
 const router = createRouter({
   history: createWebHistory(),
