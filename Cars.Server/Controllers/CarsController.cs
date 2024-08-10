@@ -1,5 +1,6 @@
 ﻿using Cars.Server.Dto;
 using Cars.Server.Helpers;
+using Cars.Server.Helpers.Exceptions;
 using Cars.Server.Repositories.Contracts;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,10 @@ namespace Cars.Server.Controllers
             catch (Exception ex) when (ex is DuplicateSerialNumberException)
             {
                 return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex) when (ex is InvalidFuelTypeException)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {

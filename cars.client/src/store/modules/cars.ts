@@ -1,5 +1,5 @@
 // store/cars.ts
-import axios from '../../axiosConfig';
+import axios from '@/axiosConfig';
 import { ActionContext } from 'vuex';
 
 interface Car {
@@ -62,10 +62,11 @@ const actions = {
   async updateCar({ commit, dispatch }: ActionContext<State, any>, payload: { car: Car; serialNumberToUpdate: string }) {
     try {
         const { car, serialNumberToUpdate } = payload;
-
-        await axios.put(`/api/cars/${serialNumberToUpdate}`, car);
+        const response = await axios.put(`/api/cars/${serialNumberToUpdate}`, car);
         await dispatch('fetchCars');
-        commit('newCar', car);
+        commit('updateSelectedCar', car);
+
+        return response;
     } catch (error) {
         console.error('Error updating car:', error);
     }
@@ -79,6 +80,12 @@ const mutations = {
   setCars: (state: State, cars: Car[]) => (state.cars = cars),
   newCar: (state: State, car: Car) => state.cars.push(car),
   removeCar: (state: State, serialNumber: string) => (state.cars = state.cars.filter((car) => car.serialNumber !== serialNumber)),
+
+  updateSelectedCar: (state: State, car: Car) => {
+    if (state.selectedCar && state.selectedCar.serialNumber === car.serialNumber) {
+        state.selectedCar = car;
+    }
+  },
 };
 
 export default {

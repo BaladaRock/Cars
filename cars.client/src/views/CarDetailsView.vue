@@ -9,7 +9,7 @@
     <p>Serial Number: {{ selectedCar.serialNumber }}</p>
 
     <button @click="goBack">Back to Home</button>
-    <CarEditForm :car="selectedCar" @update-success="goBack" />
+    <CarEditForm :car="selectedCar" @update-success="goBack" :key="selectedCar.serialNumber"/>
   </div>
   <div v-else>
     <p>Loading...</p>
@@ -17,10 +17,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, computed } from 'vue';
+import { defineComponent, onMounted, watch, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import CarEditForm from '@/components/CarEditForm.vue';
+import ensureString from '@/helpers/carHelpers';
 
 export default defineComponent({
   components: {
@@ -30,13 +31,29 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
     const router = useRouter();
-    const serialNumber = route.params.serialNumber;
+    const serialNumber = ref(route.params.serialNumber);
+
+    const fetchCarData = async (serialNumber: string) => {
+      if (serialNumber) {
+        await store.dispatch('fetchCar', serialNumber);
+      }
+    };
 
     onMounted(() => {
-      if (serialNumber) {
-        store.dispatch('fetchCar', serialNumber);
+      if (!serialNumber.value) {
+        return;
       }
+      
+      fetchCarData(ensureString(serialNumber.value));
     });
+
+    watch(
+      () => route.params.serialNumber,
+      (newSerialNumber) => {
+        fetchCarData(ensureString(newSerialNumber));
+      }
+    );
+    
 
     const selectedCar = computed(() => store.getters.selectedCar);
 

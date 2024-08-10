@@ -6,7 +6,7 @@
   
   <script lang="ts">
   import { defineComponent as homeView } from 'vue';
-  import CarList from '../components/CarListComponent.vue';
+  import CarList from '@/components/CarListComponent.vue';
   
   export default homeView({
     components: {

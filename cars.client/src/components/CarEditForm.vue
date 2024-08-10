@@ -29,6 +29,8 @@
 </template>
 
 <script lang="ts">
+import axios from '@/axiosConfig';
+import router from '@/router';
 import { defineComponent, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
@@ -39,7 +41,7 @@ export default defineComponent({
             required: true
         }
     },
-    setup(props) {
+    setup(props, { emit }) {
         const store = useStore();
         const editedCar = ref({ ...props.car });
 
@@ -47,22 +49,47 @@ export default defineComponent({
         const originalSerialNumber = ref(props.car.serialNumber);
 
         // Watch for changes in the `car` prop and update `editedCar`
-        watch(() => props.car, (newCar) => {
-            editedCar.value = { ...newCar };
-            originalSerialNumber.value = newCar.serialNumber;
-        }, { immediate: true });
+        watch(
+            () => props.car,
+            (newCar) => {
+                editedCar.value = { ...newCar };
+                originalSerialNumber.value = newCar.serialNumber;
+            },
+            { immediate: true }
+        );
 
         const updateCarDetails = async () => {
             try {
-                let urlSerialNumber = editedCar.value.serialNumber;
-                if (originalSerialNumber.value !== editedCar.value.serialNumber) {
-                    urlSerialNumber = originalSerialNumber.value;
-                }
+                let urlSerialNumber = originalSerialNumber.value;
 
-                await store.dispatch('updateCar', { car: { ...editedCar.value }, serialNumberToUpdate: urlSerialNumber });
-                alert('Car details updated successfully!');
+                // Perform the update
+                const response = await store.dispatch('updateCar', {
+                    car: { ...editedCar.value },
+                    serialNumberToUpdate: urlSerialNumber
+                });
+
+                if (response.status === 200) {
+                    if (originalSerialNumber.value !== editedCar.value.serialNumber) {
+                        emit('update-succes');
+                        alert('Car details updated successfully!');
+                        router.push({
+                            name: 'car-detail',
+                            params: { serialNumber: editedCar.value.serialNumber }
+                        });
+                    }
+                    else {
+                        emit('update-succes');
+                        alert('Car details updated successfully!');
+
+                        // // Update the original serial number reference
+                        originalSerialNumber.value = editedCar.value.serialNumber;
+                    }
+                }
             } catch (error) {
-                alert('An error occurred while updating car details.');
+                const alertMessage = axios.isAxiosError(error) && error.response?.status === 409
+                    ? 'Serial number already exists. Please choose a different one.'
+                    : 'An error occurred while updating car details.';
+                alert(alertMessage);
             }
         };
 

@@ -1,6 +1,7 @@
 ﻿using Cars.Server.Context;
 using Cars.Server.Dto;
 using Cars.Server.Helpers;
+using Cars.Server.Helpers.Exceptions;
 using Cars.Server.Models;
 using Cars.Server.Repositories.Contracts;
 using Dapper;
@@ -48,6 +49,12 @@ namespace Cars.Server.Repositories
         {
             using var connection = _context.CreateConnection();
 
+            // Check the validity of the fuel type, sent via the request
+            if (!IsValidFuelType(car.Fuel))
+            {
+                throw new ArgumentException("Invalid fuel type");
+            }
+
             // If SerialNumber has been changed, validate its uniqueness
             if (car.SerialNumber != serialNumber)
             {
@@ -69,7 +76,7 @@ namespace Cars.Server.Repositories
             parameters.Add("Brand", car.Brand, DbType.String);
             parameters.Add("ModelYear", car.ModelYear, DbType.Int32);
             parameters.Add("Model", car.Model, DbType.String);
-            parameters.Add("Fuel", car.Fuel, DbType.String);
+            parameters.Add("Fuel", car.Fuel.ToString(), DbType.String);
             parameters.Add("Color", car.Color, DbType.String);
             parameters.Add("NewSerialNumber", car.SerialNumber, DbType.String);
             parameters.Add("OriginalSerialNumber", serialNumber, DbType.String);
@@ -77,5 +84,7 @@ namespace Cars.Server.Repositories
             await connection.ExecuteAsync(queryUpdate, parameters);
             return await GetCarBySerialNumber(car.SerialNumber);
         }
+
+        private static bool IsValidFuelType(FuelType fuel) => Enum.IsDefined(typeof(FuelType), fuel);
     }
 }
