@@ -31,8 +31,11 @@ const actions = {
     try {
       const response = await axios.post<Car>('/api/cars', car);
       commit('newCar', response.data);
+
+      return response;
     } catch (error) {
       console.error('Error adding car:', error);
+      return Promise.reject(error);
     }
   },
   async fetchCar({ commit }: ActionContext<State, any>, serialNumber: string) {
@@ -41,6 +44,7 @@ const actions = {
       commit('setCar', response.data);
     } catch (error) {
       console.error('Error fetching car:', error);
+      return Promise.reject(error);
     }
   },
   async fetchCars({ commit }: ActionContext<State, any>) {
@@ -49,6 +53,7 @@ const actions = {
       commit('setCars', response.data);
     } catch (error) {
       console.error('Error fetching cars:', error);
+      return Promise.reject(error);
     }
   },
   async deleteCar({ commit }: ActionContext<State, any>, serialNumber: string) {
@@ -57,20 +62,22 @@ const actions = {
       commit('removeCar', serialNumber);
     } catch (error) {
       console.error('Error deleting car:', error);
+      return Promise.reject(error);
     }
   },
   async updateCar({ commit, dispatch }: ActionContext<State, any>, payload: { car: Car; serialNumberToUpdate: string }) {
     try {
-        const { car, serialNumberToUpdate } = payload;
-        const response = await axios.put(`/api/cars/${serialNumberToUpdate}`, car);
-        await dispatch('fetchCars');
-        commit('updateSelectedCar', car);
+      const { car, serialNumberToUpdate } = payload;
+      const response = await axios.put(`/api/cars/${serialNumberToUpdate}`, car);
+      await dispatch('fetchCars');
+      commit('updateSelectedCar', car);
 
-        return response;
+      return response;
     } catch (error) {
-        console.error('Error updating car:', error);
+      console.error('Error updating car:', error);
+      return Promise.reject(error);
     }
-},
+  },
 };
 
 const mutations = {
@@ -83,7 +90,7 @@ const mutations = {
 
   updateSelectedCar: (state: State, car: Car) => {
     if (state.selectedCar && state.selectedCar.serialNumber === car.serialNumber) {
-        state.selectedCar = car;
+      state.selectedCar = car;
     }
   },
 };
