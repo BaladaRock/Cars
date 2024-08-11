@@ -9,7 +9,10 @@
       <p>Color: {{ selectedCar.color }}</p>
       <p>Serial Number: {{ selectedCar.serialNumber }}</p>
 
-      <button @click="goBack">Back to Home</button>
+      <div class="btn_back_container">
+        <button class="back_button" @click="goBack">Back to Home</button>
+      </div>
+
     </div>
     <div class="car_edit_form_wrapper" v-if="selectedCar">
       <CarEditForm :car="selectedCar" @update-success="goBack" :key="selectedCar.serialNumber" />
@@ -96,6 +99,17 @@ export default defineComponent({
 
 .car_edit_form_wrapper {
   flex: 1 1 45%;
+}
+
+.back_button {
+  padding: 10px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
 }
 
 @media (max-width: 768px) {

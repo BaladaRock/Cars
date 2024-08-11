@@ -6,15 +6,12 @@
 
       <div class="cars_container">
         <div class="car_container" v-for="car in allCars" :key="car.serialNumber">
-          <Car :car="car" @delete-car="deleteCar" />
-          <button type="button" @click="viewCarDetails(car.serialNumber)">
-            See car
-          </button>
+          <Car :car="car" @delete-car="handleDeleteCar" />
         </div>
       </div>
 
       <div class="btn_create_container">
-        <button class="btn_create" type="button" @click="addCar()">
+        <button class="save_button" type="button" @click="addCar()">
           Create a new car
         </button>
       </div>
@@ -46,7 +43,18 @@ export default defineComponent({
 
     addCar() {
       this.$router.push({ name: 'new-car' });
-    }
+    },
+
+    handleDeleteCar(serialNumber: string) {
+      this.deleteCar(serialNumber)
+        .then(() => {
+          alert('Car deleted successfully!');
+        })
+        .catch((error) => {
+          console.error('Error deleting car:', error);
+          alert('An error occurred while deleting the car.');
+        });
+    },
 
   },
   created() {
@@ -80,13 +88,15 @@ export default defineComponent({
     box-sizing: border-box;
   }
 
-  .btn_create {
+  .save_button{
+    padding: 10px;
+    background-color: #4caf50;
+    border: none;
     color: white;
-    background-color: red;
-    height: 3rem;
-    width: 100%;
-    font-size: larger;
-    max-width: 200px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
   }
 
   @media (max-width: 768px) {

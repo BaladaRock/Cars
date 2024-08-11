@@ -24,7 +24,13 @@
             <label for="serialNumber">Serial Number:</label>
             <input id="serialNumber" v-model="newCar.serialNumber" />
         </div>
-        <button type="submit">Save Changes</button>
+
+        <div class="btn_back_container">
+            <button class="back_button save-button" type="submit">Save Changes</button>
+        </div>
+        <div class="btn_back_container">
+            <button class="back_button" @click="goBack">Back to Home</button>
+        </div>
     </form>
 </template>
 
@@ -67,9 +73,14 @@ export default defineComponent({
             }
         };
 
+        const goBack = () => {
+            router.push({ name: 'home' });
+        };
+
         return {
             newCar,
             createNewCar,
+            goBack
         };
     },
 });
@@ -79,9 +90,9 @@ export default defineComponent({
 .new_car_form {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
     width: 100%;
-    padding: 1rem;
+    padding: 0.8rem;
     box-sizing: border-box;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -90,30 +101,48 @@ export default defineComponent({
 
 .new_car_form label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-weight: bold;
 }
 
 .new_car_form input {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+    padding: 6px;
+    margin-bottom: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
 .new_car_form button {
-    padding: 10px;
+    padding: 8px;
     background-color: #4caf50;
     border: none;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .new_car_form button:hover {
     background-color: #45a049;
+}
+
+.save-button {
+    /* padding: 8px;
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 50%;
+    margin: 0 auto; */
+}
+
+.btn_back_container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
 }
 </style>

@@ -1,12 +1,17 @@
 <template>
-  <div>
+  <div class="car-card">
     <p>{{ car.brand }} - {{ car.model }} ({{ car.modelYear }}) - {{ car.fuel }} - {{ car.color }}</p>
-    <button @click="deleteCar(car.serialNumber)">Delete</button>
+
+    <div class="car-actions">
+      <button class="see-car-button" @click="viewCarDetails">See car</button>
+      <DeleteButton :serialNumber="car.serialNumber" @delete-car="handleDelete" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+import DeleteButton from '@/components/DeleteButtonComponent.vue';
 
 interface Car {
   brand: string;
@@ -19,6 +24,9 @@ interface Car {
 
 export default defineComponent({
   name: 'CarComponent',
+  components: {
+    DeleteButton,
+  },
   props: {
     car: {
       type: Object as PropType<Car>,
@@ -26,36 +34,60 @@ export default defineComponent({
     },
   },
   methods: {
-    deleteCar(serialNumber: string) {
+    viewCarDetails() {
+      this.$router.push({ name: 'car-detail', params: { serialNumber: this.car.serialNumber } });
+    },
+    handleDelete(serialNumber: string) {
       this.$emit('delete-car', serialNumber);
     },
   },
 });
 </script>
-  
-  <style scoped>
-  .car-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .car-card p {
-    margin: 8px 0;
-  }
-  
-  .car-card button {
-    background-color: #ff4d4f;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .car-card button:hover {
-    background-color: #e60023;
-  }
-  </style>
+
+<style scoped>
+.car-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.car-card p {
+  margin: 8px 0;
+}
+
+.car-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.see-car-button {
+  padding: 10px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.see-car-button:hover {
+  background-color: #45a049;
+}
+
+.delete-button {
+  color: white;
+  background-color: #ff4d4f;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #e60023;
+}
+</style>
