@@ -1,0 +1,47 @@
+.car_details_edit_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 100%;
+    margin: auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    gap: 2rem;
+  }
+  
+  .car_details {
+    flex: 1 1 45%;
+    padding: 1rem;
+    box-sizing: border-box;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .car_edit_form_wrapper {
+    flex: 1 1 45%;
+  }
+  
+  .back_button {
+    padding: 10px;
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .car_details_edit_wrapper {
+      flex-direction: column;
+    }
+  
+    .car_details,
+    .car_edit_form_wrapper {
+      flex: 1 1 100%;
+      padding: 0.5rem;
+    }
+  }

@@ -28,16 +28,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.delete_button {
-  padding: 10px;
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.icon-delete {}
+@import "@/assets/styles/components/DeleteButtonComponent.css";
 </style>

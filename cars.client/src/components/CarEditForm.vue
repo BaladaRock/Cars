@@ -98,44 +98,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.car_edit_form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 1rem;
-    box-sizing: border-box;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.car_edit_form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.car_edit_form input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.car_edit_form button {
-    padding: 10px;
-    background-color: #4caf50;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-.car_edit_form button:hover {
-    background-color: #45a049;
-}
+@import "@/assets/styles/components/CarEditForm.css";
 </style>

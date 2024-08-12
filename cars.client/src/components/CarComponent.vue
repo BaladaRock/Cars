@@ -45,49 +45,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.car-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.car-card p {
-  margin: 8px 0;
-}
-
-.car-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-}
-
-.see-car-button {
-  padding: 10px;
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-.see-car-button:hover {
-  background-color: #45a049;
-}
-
-.delete-button {
-  color: white;
-  background-color: #ff4d4f;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background-color: #e60023;
-}
+@import "@/assets/styles/components/CarComponent.css";
 </style>
