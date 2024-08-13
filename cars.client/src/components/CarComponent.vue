@@ -2,16 +2,22 @@
   <div class="car-card">
     <p>{{ car.brand }} - {{ car.model }} ({{ car.modelYear }}) - {{ car.fuel }} - {{ car.color }}</p>
 
+    <div class="car-image-container">
+      <img class="car-image" :src="carImageSource" alt="car-image">
+    </div>
+    
     <div class="car-actions">
       <button class="see-car-button" @click="viewCarDetails">See car</button>
       <DeleteButton :serialNumber="car.serialNumber" @delete-car="handleDelete" />
     </div>
+
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import DeleteButton from '@/components/DeleteButtonComponent.vue';
+import computeCarImageSource from '@/helpers/carImageHelper';
 
 export interface Car {
   brand: string;
@@ -32,6 +38,13 @@ export default defineComponent({
       type: Object as PropType<Car>,
       required: true,
     },
+  },
+  setup(props) {
+    const carImageSource = computed(() => computeCarImageSource(props.car));
+
+    return {
+      carImageSource,
+    };
   },
   methods: {
     viewCarDetails() {
