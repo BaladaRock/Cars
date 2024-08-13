@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 sql_queries/queries.sql
 sql_queries/dbo.Models.sql
+/cars.client/src/assets/images
