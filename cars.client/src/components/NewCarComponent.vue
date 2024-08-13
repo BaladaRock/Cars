@@ -35,10 +35,14 @@
 </template>
 
 <script lang="ts">
-import axios from '@/axiosConfig';
 import router from '@/router';
 import { defineComponent, ref } from 'vue';
 import { useStore } from 'vuex';
+import {
+    handleError,
+    redirectBasedOnSerialNumber
+} from '@/helpers/carLogsHelper';
+
 
 export default defineComponent({
     name: 'NewCarComponent',
@@ -59,17 +63,10 @@ export default defineComponent({
                 const response = await store.dispatch('addCar', newCar.value);
                 if (response && response.status === 201) {
                     alert('Car created successfully!');
-                    router.push({
-                        name: 'car-detail',
-                        params: { serialNumber: newCar.value.serialNumber },
-                    });
                 }
+                redirectBasedOnSerialNumber(newCar.value.serialNumber);
             } catch (error) {
-                const alertMessage =
-                    axios.isAxiosError(error) && error.response?.status === 409
-                        ? 'Serial number already exists. Please choose a different one.'
-                        : 'An error occurred while updating car details.';
-                alert(alertMessage);
+                handleError(error);
             }
         };
 

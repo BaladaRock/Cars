@@ -28,7 +28,7 @@ import { defineComponent, onMounted, watch, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import CarEditForm from '@/components/CarEditForm.vue';
-import ensureString from '@/helpers/carHelpers';
+import ensureString from '@/helpers/carSerialNumberHelper';
 
 export default defineComponent({
   components: {

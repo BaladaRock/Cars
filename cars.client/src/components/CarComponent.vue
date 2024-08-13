@@ -13,7 +13,7 @@
 import { defineComponent, PropType } from 'vue';
 import DeleteButton from '@/components/DeleteButtonComponent.vue';
 
-interface Car {
+export interface Car {
   brand: string;
   modelYear: number;
   model: string;

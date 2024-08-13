@@ -12,7 +12,7 @@
 
       <div class="btn_create_container">
         <button class="save_button" type="button" @click="addCar()">
-          Create a new car
+          Add a new car
         </button>
       </div>
 
