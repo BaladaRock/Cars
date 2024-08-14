@@ -171,7 +171,7 @@ import {
 import {
     handleError,
     redirectBasedOnSerialNumber
-} from '@/helpers/carLogsHelper';
+} from '@/helpers/carAccessHelper';
 
 export default defineComponent({
     props: {

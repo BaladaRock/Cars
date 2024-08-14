@@ -8,22 +8,22 @@
     padding: 1rem;
     box-sizing: border-box;
     gap: 2rem;
-  }
-  
-  .car_details {
+}
+
+.car_details {
     flex: 1 1 45%;
     padding: 1rem;
     box-sizing: border-box;
     background-color: #f0f0f0;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .car_edit_form_wrapper {
+}
+
+.car_edit_form_wrapper {
     flex: 1 1 45%;
-  }
-  
-  .back_button {
+}
+
+.back_button {
     padding: 10px;
     background-color: #4caf50;
     border: none;
@@ -32,16 +32,36 @@
     cursor: pointer;
     border-radius: 5px;
     margin-top: 10px;
-  }
-  
-  @media (max-width: 768px) {
+}
+
+.car-image-container {
+    max-width: 100%;
+    height: auto;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+.car-image {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
     .car_details_edit_wrapper {
-      flex-direction: column;
+        flex-direction: column;
     }
-  
+
     .car_details,
     .car_edit_form_wrapper {
-      flex: 1 1 100%;
-      padding: 0.5rem;
+        flex: 1 1 100%;
+        padding: 0.5rem;
     }
-  }
+}

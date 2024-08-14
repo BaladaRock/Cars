@@ -41,7 +41,7 @@ import { useStore } from 'vuex';
 import {
     handleError,
     redirectBasedOnSerialNumber
-} from '@/helpers/carLogsHelper';
+} from '@/helpers/carAccessHelper';
 
 
 export default defineComponent({
