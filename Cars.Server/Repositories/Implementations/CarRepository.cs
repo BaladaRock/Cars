@@ -19,7 +19,7 @@ namespace Cars.Server.Repositories
 
             using var connection = _context.CreateConnection();
 
-            var queryInset = "INSERT INTO [dbo].[Models] (Brand, ModelYear, Model, Fuel, Color, SerialNumber)" +
+            var queryInset = "INSERT INTO [dbo].[cars] (Brand, ModelYear, Model, Fuel, Color, SerialNumber)" +
                 " VALUES (@Brand, @ModelYear, @Model, @Fuel, @Color, @SerialNumber)" +
                 " SELECT CAST(SCOPE_IDENTITY() as NVARCHAR)";
 
@@ -47,7 +47,7 @@ namespace Cars.Server.Repositories
 
         public async Task DeleteCar(string? serialNumber)
         {
-            var deleteQuery = "DELETE FROM [dbo].[Models] WHERE SerialNumber = @serialNumber";
+            var deleteQuery = "DELETE FROM [dbo].[cars] WHERE SerialNumber = @serialNumber";
 
             using var connection = _context.CreateConnection();
             await connection.ExecuteAsync(deleteQuery, new { serialNumber });
@@ -55,7 +55,7 @@ namespace Cars.Server.Repositories
 
         public async Task<IEnumerable<Car?>> GetAllCars()
         {
-            var queryCars = "SELECT Brand, ModelYear, Model, Fuel, Color, SerialNumber FROM [dbo].[Models]";
+            var queryCars = "SELECT Brand, ModelYear, Model, Fuel, Color, SerialNumber FROM [dbo].[cars]";
 
             using var connection = _context.CreateConnection();
             return await connection.QueryAsync<Car>(queryCars);
@@ -63,7 +63,7 @@ namespace Cars.Server.Repositories
 
         public async Task<Car?> GetCarBySerialNumber(string? serialNumber)
         {
-            var queryCar = "SELECT Brand, ModelYear, Model, Fuel, Color, SerialNumber FROM [dbo].[Models]" +
+            var queryCar = "SELECT Brand, ModelYear, Model, Fuel, Color, SerialNumber FROM [dbo].[cars]" +
                    "WHERE SerialNumber = @serialNumber";
 
             using var connection = _context.CreateConnection();
@@ -81,7 +81,7 @@ namespace Cars.Server.Repositories
 
             using var connection = _context.CreateConnection();
 
-            var queryUpdate = "UPDATE [dbo].[Models] SET Brand = @Brand, ModelYear = @ModelYear, Model = @Model," +
+            var queryUpdate = "UPDATE [dbo].[cars] SET Brand = @Brand, ModelYear = @ModelYear, Model = @Model," +
                 " Fuel = @Fuel, Color = @Color, SerialNumber = @NewSerialNumber" +
                 " WHERE SerialNumber = @OriginalSerialNumber";
 
@@ -116,7 +116,7 @@ namespace Cars.Server.Repositories
 
             using var connection = _context.CreateConnection();
             var existingCar = await connection.QueryFirstOrDefaultAsync<Car>(
-                "SELECT * FROM [dbo].[Models] WHERE SerialNumber = @NewSerialNumber",
+                "SELECT * FROM [dbo].[cars] WHERE SerialNumber = @NewSerialNumber",
                 new { NewSerialNumber = serialNumber });
 
             if (existingCar == null)
