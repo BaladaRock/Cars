@@ -84,7 +84,7 @@ export default defineComponent({
 
         const originalSerialNumber = ref(props.car.serialNumber);
 
-        const initialCars = computed<Car[]>(() => store.getters.initialCars); // Folosim initialCars
+        const initialCars = computed<Car[]>(() => store.getters.initialCars);
 
         const uniqueBrands = computed<string[]>(() => {
             return [...new Set(initialCars.value.map(car => car.brand))];
