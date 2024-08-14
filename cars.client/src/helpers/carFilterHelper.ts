@@ -1,13 +1,13 @@
 import { Car } from '@/components/CarComponent.vue';
 
 export const getFilteredProperty = <K extends keyof Car>(
-    cars: Car[],
+    initialCars: Car[],
     filters: Partial<Car>,
     property: K
 ): Car[K][] => {
     return [
         ...new Set(
-            cars
+            initialCars
                 .filter((car) =>
                     Object.keys(filters).every(
                         (key) => car[key as keyof Car] === filters[key as keyof Car]
@@ -19,35 +19,35 @@ export const getFilteredProperty = <K extends keyof Car>(
 };
 
 export const getFilteredModels = (
-    cars: Car[],
+    initialCars: Car[],
     brand: string
 ): string[] => {
-    return getFilteredProperty(cars, { brand }, "model");
+    return getFilteredProperty(initialCars, { brand }, "model");
 };
 
 export const getFilteredYears = (
-    cars: Car[],
+    initialCars: Car[],
     brand: string,
     model: string
 ): number[] => {
-    return getFilteredProperty(cars, { brand, model }, "modelYear");
+    return getFilteredProperty(initialCars, { brand, model }, "modelYear");
 };
 
 export const getFilteredFuelTypes = (
-    cars: Car[],
+    initialCars: Car[],
     brand: string,
     model: string,
     year: number
 ): string[] => {
-    return getFilteredProperty(cars, { brand, model, modelYear: year }, "fuel");
+    return getFilteredProperty(initialCars, { brand, model, modelYear: year }, "fuel");
 };
 
 export const getFilteredColors = (
-    cars: Car[],
+    initialCars: Car[],
     brand: string,
     model: string,
     year: number,
     fuel: string
 ): string[] => {
-    return getFilteredProperty(cars, { brand, model, modelYear: year, fuel }, "color");
+    return getFilteredProperty(initialCars, { brand, model, modelYear: year, fuel }, "color");
 };

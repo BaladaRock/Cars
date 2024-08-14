@@ -1,4 +1,3 @@
-// store/cars.ts
 import axios from '@/axiosConfig';
 import { ActionContext } from 'vuex';
 
@@ -14,16 +13,19 @@ interface Car {
 interface State {
   cars: Car[];
   selectedCar: Car | null;
+  initialCars: Car[];
 }
 
 const state: State = {
   cars: [],
   selectedCar: null,
+  initialCars: [],
 };
 
 const getters = {
   allCars: (state: State) => state.cars,
   selectedCar: (state: State) => state.selectedCar,
+  initialCars: (state: State) => state.initialCars,
 };
 
 const actions = {
@@ -51,6 +53,7 @@ const actions = {
     try {
       const response = await axios.get<Car[]>('/api/cars');
       commit('setCars', response.data);
+      commit('setInitialCars', response.data);
     } catch (error) {
       console.error('Error fetching cars:', error);
       return Promise.reject(error);
@@ -85,6 +88,7 @@ const mutations = {
     state.selectedCar = car;
   },
   setCars: (state: State, cars: Car[]) => (state.cars = cars),
+  setInitialCars: (state: State, cars: Car[]) => (state.initialCars = cars),
   newCar: (state: State, car: Car) => state.cars.push(car),
   removeCar: (state: State, serialNumber: string) => (state.cars = state.cars.filter((car) => car.serialNumber !== serialNumber)),
 
