@@ -10,13 +10,13 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/api/cars/:serialNumber',
+    path: '/cars/:serialNumber',
     name: 'car-detail',
     component: CarDetailsView,
     props: true
   },
   {
-    path: '/api/cars/newCar',
+    path: '/cars/newCar',
     name: 'new-car',
     component: NewCarComponent,
     props: true
