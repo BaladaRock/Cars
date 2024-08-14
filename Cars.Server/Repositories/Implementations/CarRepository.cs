@@ -61,6 +61,14 @@ namespace Cars.Server.Repositories
             return await connection.QueryAsync<Car>(queryCars);
         }
 
+        public async Task<IEnumerable<CarModel?>> GetCarModels()
+        {
+            var queryCars = "SELECT Brand, ModelYear, Model, Fuel, Color FROM [dbo].[models]";
+
+            using var connection = _context.CreateConnection();
+            return await connection.QueryAsync<CarModel>(queryCars);
+        }
+
         public async Task<Car?> GetCarBySerialNumber(string? serialNumber)
         {
             var queryCar = "SELECT Brand, ModelYear, Model, Fuel, Color, SerialNumber FROM [dbo].[cars]" +
@@ -126,5 +134,6 @@ namespace Cars.Server.Repositories
 
             throw new DuplicateSerialNumberException(serialNumber!);
         }
+       
     }
 }

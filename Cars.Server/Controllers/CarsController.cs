@@ -27,6 +27,19 @@ namespace Cars.Server.Controllers
             }
         }
 
+        [HttpGet("/api/models", Name = "GetCarModels")]
+        public async Task<IActionResult> GetAllModels()
+        {
+            try
+            {
+                return Ok(await _carRepository.GetCarModels());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet("{serialNumber}", Name = "GetCarBySerialNumber")]
         public async Task<IActionResult> GetCarBySerialNumber(string? serialNumber)
         {
