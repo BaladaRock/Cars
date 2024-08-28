@@ -1,53 +1,39 @@
-import { Car } from '@/components/CarComponent.vue';
+import { Model } from '@/store/modules/models';
 
-export const getFilteredProperty = <K extends keyof Car>(
-    initialCars: Car[],
-    filters: Partial<Car>,
+export const getFilteredProperty = <K extends keyof Model>(
+    models: Model[] = [],
+    filters: Partial<Model>,
     property: K
-): Car[K][] => {
+): Model[K][] => {
+    if (!models || models.length === 0) {
+        return [];
+    }
+
     return [
         ...new Set(
-            initialCars
-                .filter((car) =>
+            models
+                .filter((model) =>
                     Object.keys(filters).every(
-                        (key) => car[key as keyof Car] === filters[key as keyof Car]
+                        (key) => model[key as keyof Model] === filters[key as keyof Model]
                     )
                 )
-                .map((car) => car[property])
+                .map((model) => model[property])
         ),
     ];
 };
 
-export const getFilteredModels = (
-    initialCars: Car[],
-    brand: string
-): string[] => {
-    return getFilteredProperty(initialCars, { brand }, "model");
+export const getFilteredModels = (models: Model[], brand: string): string[] => {
+    return getFilteredProperty(models, { brand }, "model");
 };
 
-export const getFilteredYears = (
-    initialCars: Car[],
-    brand: string,
-    model: string
-): number[] => {
-    return getFilteredProperty(initialCars, { brand, model }, "modelYear");
+export const getFilteredYears = (models: Model[], brand: string, model: string): number[] => {
+    return getFilteredProperty(models, { brand, model }, "modelYear");
 };
 
-export const getFilteredFuelTypes = (
-    initialCars: Car[],
-    brand: string,
-    model: string,
-    year: number
-): string[] => {
-    return getFilteredProperty(initialCars, { brand, model, modelYear: year }, "fuel");
+export const getFilteredFuelTypes = (models: Model[], brand: string, model: string, year: number): string[] => {
+    return getFilteredProperty(models, { brand, model, modelYear: year }, "fuel");
 };
 
-export const getFilteredColors = (
-    initialCars: Car[],
-    brand: string,
-    model: string,
-    year: number,
-    fuel: string
-): string[] => {
-    return getFilteredProperty(initialCars, { brand, model, modelYear: year, fuel }, "color");
+export const getFilteredColors = (models: Model[], brand: string, model: string, year: number, fuel: string): string[] => {
+    return getFilteredProperty(models, { brand, model, modelYear: year, fuel }, "color");
 };

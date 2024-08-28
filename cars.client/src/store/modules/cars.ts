@@ -90,8 +90,9 @@ const mutations = {
   setCars: (state: State, cars: Car[]) => (state.cars = cars),
   setInitialCars: (state: State, cars: Car[]) => (state.initialCars = cars),
   newCar: (state: State, car: Car) => state.cars.push(car),
-  removeCar: (state: State, serialNumber: string) => (state.cars = state.cars.filter((car) => car.serialNumber !== serialNumber)),
-
+  removeCar: (state: State, serialNumber: string) => {
+    state.cars = state.cars.filter((car) => car.serialNumber !== serialNumber);
+  },
   updateSelectedCar: (state: State, car: Car) => {
     if (state.selectedCar && state.selectedCar.serialNumber === car.serialNumber) {
       state.selectedCar = car;

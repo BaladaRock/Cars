@@ -60,9 +60,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { Car } from '@/components/CarComponent.vue';
+import { Model } from '@/store/modules/models';
 import {
     getFilteredModels,
     getFilteredYears,
@@ -84,19 +85,16 @@ export default defineComponent({
 
         const originalSerialNumber = ref(props.car.serialNumber);
 
-        const initialCars = computed<Car[]>(() => store.getters.initialCars);
-
-        const uniqueBrands = computed<string[]>(() => {
-            return [...new Set(initialCars.value.map(car => car.brand))];
-        });
-
+        const allModels = computed<Model[]>(() => store.getters.allModels);
+        
+        const uniqueBrands = computed<string[]>(() => store.getters.uniqueBrands);
         const filteredModels = ref<string[]>([]);
         const filteredYears = ref<number[]>([]);
         const filteredFuels = ref<string[]>([]);
         const filteredColors = ref<string[]>([]);
 
         const filterModels = () => {
-            filteredModels.value = getFilteredModels(initialCars.value, editedCar.value.brand);
+            filteredModels.value = getFilteredModels(allModels.value, editedCar.value.brand);
             editedCar.value.model = '';
             filteredYears.value = [];
             editedCar.value.modelYear = null as any;
@@ -107,7 +105,7 @@ export default defineComponent({
         };
 
         const filterYears = () => {
-            filteredYears.value = getFilteredYears(initialCars.value, editedCar.value.brand, editedCar.value.model);
+            filteredYears.value = getFilteredYears(allModels.value, editedCar.value.brand, editedCar.value.model);
             editedCar.value.modelYear = null as any;
             filteredFuels.value = [];
             editedCar.value.fuel = '';
@@ -117,7 +115,7 @@ export default defineComponent({
 
         const filterFuelTypes = () => {
             filteredFuels.value = getFilteredFuelTypes(
-                initialCars.value,
+                allModels.value,
                 editedCar.value.brand,
                 editedCar.value.model,
                 editedCar.value.modelYear
@@ -129,7 +127,7 @@ export default defineComponent({
 
         const filterColors = () => {
             filteredColors.value = getFilteredColors(
-                initialCars.value,
+                allModels.value,
                 editedCar.value.brand,
                 editedCar.value.model,
                 editedCar.value.modelYear,
@@ -137,6 +135,16 @@ export default defineComponent({
             );
             editedCar.value.color = '';
         };
+
+        onMounted(async () => {
+            await store.dispatch('fetchModels');
+            filterModels();
+        });
+
+        watch(() => editedCar.value.brand, filterModels);
+        watch(() => editedCar.value.model, filterYears);
+        watch(() => editedCar.value.modelYear, filterFuelTypes);
+        watch(() => editedCar.value.fuel, filterColors);
 
         const updateCarDetails = async () => {
             try {
@@ -150,11 +158,10 @@ export default defineComponent({
                 if (response && response.status === 200) {
                     emit('update-succes');
                     alert('Car details updated successfully!');
-                    if (originalSerialNumber.value !== editedCar.value.serialNumber) {
-                        redirectBasedOnSerialNumber(editedCar.value.serialNumber);
-                    } else {
-                        originalSerialNumber.value = editedCar.value.serialNumber;
-                    }
+                    
+                    originalSerialNumber.value !== editedCar.value.serialNumber
+                        ? redirectBasedOnSerialNumber(editedCar.value.serialNumber)
+                        : originalSerialNumber.value = editedCar.value.serialNumber;
                 }
             } catch (error) {
                 alert('An error occurred while updating car details.');
