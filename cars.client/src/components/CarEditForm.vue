@@ -1,8 +1,8 @@
 <template>
     <form @submit.prevent="updateCarDetails" class="car_edit_form">
         <div>
-            <label for="brand">Brand:</label>
-            <select id="brand" v-model="editedCar.brand" @change="filterModels">
+            <label for="viewCar_brand">Brand:</label>
+            <select id="viewCar_brand" v-model="editedCar.brand" @change="filterModels">
                 <option value="" disabled>Select a brand</option>
                 <option v-for="brand in uniqueBrands" :key="brand" :value="brand">
                     {{ brand }}
@@ -11,8 +11,8 @@
         </div>
 
         <div>
-            <label for="model">Model:</label>
-            <select id="model" v-model="editedCar.model" @change="filterYears">
+            <label for="viewCar_model">Model:</label>
+            <select id="viewCar_model" v-model="editedCar.model" @change="filterYears">
                 <option value="" disabled>Select a model</option>
                 <option v-for="model in filteredModels" :key="model" :value="model">
                     {{ model }}
@@ -21,8 +21,8 @@
         </div>
 
         <div>
-            <label for="modelYear">Year:</label>
-            <select id="modelYear" v-model="editedCar.modelYear" @change="filterFuelTypes">
+            <label for="viewCar_modelYear">Year:</label>
+            <select id="viewCar_modelYear" v-model="editedCar.modelYear" @change="filterFuelTypes">
                 <option value="" disabled>Select a year</option>
                 <option v-for="year in filteredYears" :key="year" :value="year">
                     {{ year }}
@@ -31,8 +31,8 @@
         </div>
 
         <div>
-            <label for="fuel">Fuel:</label>
-            <select id="fuel" v-model="editedCar.fuel" @change="filterColors">
+            <label for="viewCar_fuel">Fuel:</label>
+            <select id="viewCar_fuel" v-model="editedCar.fuel" @change="filterColors">
                 <option value="" disabled>Select a fuel type</option>
                 <option v-for="fuel in filteredFuels" :key="fuel" :value="fuel">
                     {{ fuel }}
@@ -41,8 +41,8 @@
         </div>
 
         <div>
-            <label for="color">Color:</label>
-            <select id="color" v-model="editedCar.color">
+            <label for="viewCar_color">Color:</label>
+            <select id="viewCar_color" v-model="editedCar.color">
                 <option value="" disabled>Select a color</option>
                 <option v-for="color in filteredColors" :key="color" :value="color">
                     {{ color }}
@@ -51,8 +51,8 @@
         </div>
 
         <div>
-            <label for="serialNumber">Serial Number:</label>
-            <input id="serialNumber" v-model="editedCar.serialNumber" />
+            <label for="viewCar_serialNumber">Serial Number:</label>
+            <input id="viewCar_serialNumber" v-model="editedCar.serialNumber" />
         </div>
 
         <button type="submit">Save Changes</button>
@@ -60,17 +60,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { Car } from '@/components/CarComponent.vue';
-import { Model } from '@/store/modules/models';
-import {
-    getFilteredModels,
-    getFilteredYears,
-    getFilteredFuelTypes,
-    getFilteredColors,
-} from '@/helpers/carFilterHelper';
 import { redirectBasedOnSerialNumber } from '@/helpers/carAccessHelper';
+import { useCarFilters } from '@/mixins/carFilterMixin';
 
 export default defineComponent({
     props: {
@@ -81,60 +75,20 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const store = useStore();
+
         const editedCar = ref<Car>({ ...props.car });
-
         const originalSerialNumber = ref(props.car.serialNumber);
-
-        const allModels = computed<Model[]>(() => store.getters.allModels);
-
-        const uniqueBrands = computed<string[]>(() => store.getters.uniqueBrands);
-        const filteredModels = ref<string[]>([]);
-        const filteredYears = ref<number[]>([]);
-        const filteredFuels = ref<string[]>([]);
-        const filteredColors = ref<string[]>([]);
-
-        const filterModels = () => {
-            filteredModels.value = getFilteredModels(allModels.value, editedCar.value.brand);
-            editedCar.value.model = '';
-            filteredYears.value = [];
-            editedCar.value.modelYear = null as any;
-            filteredFuels.value = [];
-            editedCar.value.fuel = '';
-            filteredColors.value = [];
-            editedCar.value.color = '';
-        };
-
-        const filterYears = () => {
-            filteredYears.value = getFilteredYears(allModels.value, editedCar.value.brand, editedCar.value.model);
-            editedCar.value.modelYear = null as any;
-            filteredFuels.value = [];
-            editedCar.value.fuel = '';
-            filteredColors.value = [];
-            editedCar.value.color = '';
-        };
-
-        const filterFuelTypes = () => {
-            filteredFuels.value = getFilteredFuelTypes(
-                allModels.value,
-                editedCar.value.brand,
-                editedCar.value.model,
-                editedCar.value.modelYear
-            );
-            editedCar.value.fuel = '';
-            filteredColors.value = [];
-            editedCar.value.color = '';
-        };
-
-        const filterColors = () => {
-            filteredColors.value = getFilteredColors(
-                allModels.value,
-                editedCar.value.brand,
-                editedCar.value.model,
-                editedCar.value.modelYear,
-                editedCar.value.fuel
-            );
-            editedCar.value.color = '';
-        };
+        const {
+            uniqueBrands,
+            filteredModels,
+            filteredYears,
+            filteredFuels,
+            filteredColors,
+            filterModels,
+            filterYears,
+            filterFuelTypes,
+            filterColors,
+        } = useCarFilters(editedCar);
 
         onMounted(async () => {
             await store.dispatch('fetchModels');

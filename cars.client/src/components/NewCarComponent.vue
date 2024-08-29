@@ -1,28 +1,54 @@
 <template>
     <form @submit.prevent="createNewCar" class="new_car_form">
         <div>
-            <label for="brand">Brand:</label>
-            <input id="brand" v-model="newCar.brand" />
+            <label for="newCar_brand">Brand:</label>
+            <select id="newCar_brand" v-model="newCar.brand" @change="filterModels">
+                <option value="" disabled>Select a brand</option>
+                <option v-for="brand in uniqueBrands" :key="brand" :value="brand">
+                    {{ brand }}
+                </option>
+            </select>
         </div>
         <div>
-            <label for="model">Model:</label>
-            <input id="model" v-model="newCar.model" />
+            <label for="newCar_model">Model:</label>
+            <select id="newCar_model" v-model="newCar.model" @change="filterYears">
+                <option value="" disabled>Select a model</option>
+                <option v-for="model in filteredModels" :key="model" :value="model">
+                    {{ model }}
+                </option>
+            </select>
         </div>
         <div>
-            <label for="modelYear">Year:</label>
-            <input id="modelYear" v-model="newCar.modelYear" type="number" />
+            <label for="newCar_modelYear">Year:</label>
+            <select id="newCar_modelYear" v-model="newCar.modelYear" @change="filterFuelTypes">
+                <option value="" disabled>Select a year</option>
+                <option v-for="year in filteredYears" :key="year" :value="year">
+                    {{ year }}
+                </option>
+            </select>
         </div>
         <div>
-            <label for="fuel">Fuel:</label>
-            <input id="fuel" v-model="newCar.fuel" />
+            <label for="newCar_fuel">Fuel:</label>
+            <select id="newCar_fuel" v-model="newCar.fuel" @change="filterColors">
+                <option value="" disabled>Select a fuel type</option>
+                <option v-for="fuel in filteredFuels" :key="fuel" :value="fuel">
+                    {{ fuel }}
+                </option>
+            </select>
         </div>
         <div>
-            <label for="color">Color:</label>
-            <input id="color" v-model="newCar.color" />
+            <label for="newCar_color">Color:</label>
+            <select id="newCar_color" v-model="newCar.color">
+                <option value="" disabled>Select a color</option>
+                <option v-for="color in filteredColors" :key="color" :value="color">
+                    {{ color }}
+                </option>
+            </select>
         </div>
+
         <div>
-            <label for="serialNumber">Serial Number:</label>
-            <input id="serialNumber" v-model="newCar.serialNumber" />
+            <label for="newCar_serialNumber">Serial Number:</label>
+            <input id="newCar_serialNumber" v-model="newCar.serialNumber" />
         </div>
 
         <div class="btn_back_container">
@@ -36,12 +62,13 @@
 
 <script lang="ts">
 import router from '@/router';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import {
     handleError,
     redirectBasedOnSerialNumber
 } from '@/helpers/carAccessHelper';
+import { useCarFilters } from '@/mixins/carFilterMixin';
 
 
 export default defineComponent({
@@ -56,6 +83,22 @@ export default defineComponent({
             fuel: '',
             color: '',
             serialNumber: '',
+        });
+        const {
+            uniqueBrands,
+            filteredModels,
+            filteredYears,
+            filteredFuels,
+            filteredColors,
+            filterModels,
+            filterYears,
+            filterFuelTypes,
+            filterColors,
+        } = useCarFilters(newCar);
+
+        onMounted(async () => {
+            await store.dispatch('fetchModels');
+            filterModels();
         });
 
         const createNewCar = async () => {
@@ -76,6 +119,15 @@ export default defineComponent({
 
         return {
             newCar,
+            uniqueBrands,
+            filteredModels,
+            filteredYears,
+            filteredFuels,
+            filteredColors,
+            filterModels,
+            filterYears,
+            filterFuelTypes,
+            filterColors,
             createNewCar,
             goBack
         };
