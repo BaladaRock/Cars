@@ -1,30 +1,6 @@
-<template>
-  <div>
-    <h2>Cars</h2>
-
-    <div class="car_list_component_wrapper">
-
-      <div class="cars_container">
-        <div class="car_container" v-for="car in allCars" :key="car.serialNumber">
-          <Car :car="car" @delete-car="handleDeleteCar" />
-        </div>
-      </div>
-
-      <div class="btn_create_container">
-        <button class="save_button" type="button" @click="addCar()">
-          Add a new car
-        </button>
-      </div>
-
-    </div>
-
-  </div>
-</template>
-
-<script lang="ts">
 import { defineComponent } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
-import Car from '@/components/CarComponent.vue';
+import Car from '@/components/CarComponent/CarComponent.vue';
 
 export default defineComponent({
   name: 'CarListComponent',
@@ -61,8 +37,3 @@ export default defineComponent({
     this.fetchCars();
   },
 });
-</script>
-
-<style scoped>
-@import "@/assets/styles/components/CarListComponent.css";
-</style>

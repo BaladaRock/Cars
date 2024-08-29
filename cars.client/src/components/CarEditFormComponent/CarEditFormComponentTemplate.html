@@ -1,0 +1,58 @@
+<form @submit.prevent="updateCarDetails" class="car_edit_form">
+    <div>
+        <label for="viewCar_brand">Brand:</label>
+        <select id="viewCar_brand" v-model="editedCar.brand" @change="filterModels">
+            <option value="" disabled>Select a brand</option>
+            <option v-for="brand in uniqueBrands" :key="brand" :value="brand">
+                {{ brand }}
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="viewCar_model">Model:</label>
+        <select id="viewCar_model" v-model="editedCar.model" @change="filterYears">
+            <option value="" disabled>Select a model</option>
+            <option v-for="model in filteredModels" :key="model" :value="model">
+                {{ model }}
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="viewCar_modelYear">Year:</label>
+        <select id="viewCar_modelYear" v-model="editedCar.modelYear" @change="filterFuelTypes">
+            <option value="" disabled>Select a year</option>
+            <option v-for="year in filteredYears" :key="year" :value="year">
+                {{ year }}
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="viewCar_fuel">Fuel:</label>
+        <select id="viewCar_fuel" v-model="editedCar.fuel" @change="filterColors">
+            <option value="" disabled>Select a fuel type</option>
+            <option v-for="fuel in filteredFuels" :key="fuel" :value="fuel">
+                {{ fuel }}
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="viewCar_color">Color:</label>
+        <select id="viewCar_color" v-model="editedCar.color">
+            <option value="" disabled>Select a color</option>
+            <option v-for="color in filteredColors" :key="color" :value="color">
+                {{ color }}
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="viewCar_serialNumber">Serial Number:</label>
+        <input id="viewCar_serialNumber" v-model="editedCar.serialNumber" />
+    </div>
+
+    <button type="submit">Save Changes</button>
+</form>

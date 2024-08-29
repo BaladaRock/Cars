@@ -1,22 +1,5 @@
-<template>
-  <div class="car-card">
-    <p>{{ car.brand }} - {{ car.model }} ({{ car.modelYear }}) - {{ car.fuel }} - {{ car.color }}</p>
-
-    <div class="car-image-container">
-      <img class="car-image" :src="carImageSource" :alt="`Image of ${car.brand} ${car.model}`"
-        @error="handleImageError" />
-    </div>
-
-    <div class="car-actions">
-      <button class="see-car-button" @click="viewCarDetails">See car</button>
-      <DeleteButton :serialNumber="car.serialNumber" @delete-car="handleDelete" />
-    </div>
-  </div>
-</template>
-
-<script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import DeleteButton from '@/components/DeleteButtonComponent.vue';
+import DeleteButton from '@/components/DeleteButtonComponent/DeleteButtonComponent.vue';
 import { useCarImage } from '@/helpers/carImageHelper';
 
 export interface Car {
@@ -56,8 +39,3 @@ export default defineComponent({
     },
   },
 });
-</script>
-
-<style scoped>
-@import "@/assets/styles/components/CarComponent.css";
-</style>

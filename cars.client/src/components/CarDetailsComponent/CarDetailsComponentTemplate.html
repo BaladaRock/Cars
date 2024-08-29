@@ -1,0 +1,26 @@
+<div class="car_details_edit_wrapper">
+    <div class="car_details" v-if="selectedCar">
+        <h2>Car Details</h2>
+        <p>Brand: {{ selectedCar.brand }}</p>
+        <p>Model: {{ selectedCar.model }}</p>
+        <p>Year: {{ selectedCar.modelYear }}</p>
+        <p>Fuel: {{ selectedCar.fuel }}</p>
+        <p>Color: {{ selectedCar.color }}</p>
+        <p>Serial Number: {{ selectedCar.serialNumber }}</p>
+
+        <div class="car-image-container">
+            <img class="car-image" :src="carImageSource" :alt="`Image of ${selectedCar.brand} ${selectedCar.model}`"
+                @error="handleImageError" />
+        </div>
+
+        <div class="btn_back_container">
+            <button class="back_button" @click="goBack">Back to Home</button>
+        </div>
+    </div>
+    <div class="car_edit_form_wrapper" v-if="selectedCar">
+        <CarEditForm :car="selectedCar" @update-success="goBack" :key="selectedCar.serialNumber" />
+    </div>
+    <div v-else>
+        <p>Loading...</p>
+    </div>
+</div>

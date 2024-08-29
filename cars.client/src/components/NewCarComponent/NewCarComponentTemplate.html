@@ -1,0 +1,59 @@
+<form @submit.prevent="createNewCar" class="new_car_form">
+    <div>
+        <label for="newCar_brand">Brand:</label>
+        <select id="newCar_brand" v-model="newCar.brand" @change="filterModels">
+            <option value="" disabled>Select a brand</option>
+            <option v-for="brand in uniqueBrands" :key="brand" :value="brand">
+                {{ brand }}
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="newCar_model">Model:</label>
+        <select id="newCar_model" v-model="newCar.model" @change="filterYears">
+            <option value="" disabled>Select a model</option>
+            <option v-for="model in filteredModels" :key="model" :value="model">
+                {{ model }}
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="newCar_modelYear">Year:</label>
+        <select id="newCar_modelYear" v-model="newCar.modelYear" @change="filterFuelTypes">
+            <option value="" disabled>Select a year</option>
+            <option v-for="year in filteredYears" :key="year" :value="year">
+                {{ year }}
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="newCar_fuel">Fuel:</label>
+        <select id="newCar_fuel" v-model="newCar.fuel" @change="filterColors">
+            <option value="" disabled>Select a fuel type</option>
+            <option v-for="fuel in filteredFuels" :key="fuel" :value="fuel">
+                {{ fuel }}
+            </option>
+        </select>
+    </div>
+    <div>
+        <label for="newCar_color">Color:</label>
+        <select id="newCar_color" v-model="newCar.color">
+            <option value="" disabled>Select a color</option>
+            <option v-for="color in filteredColors" :key="color" :value="color">
+                {{ color }}
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="newCar_serialNumber">Serial Number:</label>
+        <input id="newCar_serialNumber" v-model="newCar.serialNumber" />
+    </div>
+
+    <div class="btn_back_container">
+        <button class="back_button save-button" type="submit">Save Changes</button>
+    </div>
+    <div class="btn_back_container">
+        <button class="back_button" @click="goBack">Back to Home</button>
+    </div>
+</form>
