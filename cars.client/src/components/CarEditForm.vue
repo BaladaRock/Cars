@@ -86,7 +86,7 @@ export default defineComponent({
         const originalSerialNumber = ref(props.car.serialNumber);
 
         const allModels = computed<Model[]>(() => store.getters.allModels);
-        
+
         const uniqueBrands = computed<string[]>(() => store.getters.uniqueBrands);
         const filteredModels = ref<string[]>([]);
         const filteredYears = ref<number[]>([]);
@@ -141,11 +141,6 @@ export default defineComponent({
             filterModels();
         });
 
-        watch(() => editedCar.value.brand, filterModels);
-        watch(() => editedCar.value.model, filterYears);
-        watch(() => editedCar.value.modelYear, filterFuelTypes);
-        watch(() => editedCar.value.fuel, filterColors);
-
         const updateCarDetails = async () => {
             try {
                 const urlSerialNumber = originalSerialNumber.value;
@@ -158,7 +153,7 @@ export default defineComponent({
                 if (response && response.status === 200) {
                     emit('update-succes');
                     alert('Car details updated successfully!');
-                    
+
                     originalSerialNumber.value !== editedCar.value.serialNumber
                         ? redirectBasedOnSerialNumber(editedCar.value.serialNumber)
                         : originalSerialNumber.value = editedCar.value.serialNumber;
