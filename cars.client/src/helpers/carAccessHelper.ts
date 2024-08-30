@@ -1,5 +1,5 @@
 import router from '@/router';
-import axios from 'axios';
+import axios from '@/config/axiosConfig';
 
 export function handleError(error: unknown) {
     const alertMessage =

@@ -8,11 +8,11 @@
   
   <main>
     <div class="wrapper">
-      <router-view></router-view> <!-- Use router-view to navigate between components -->
+      <router-view></router-view>
     </div>
   </main>
 </template>
 
 <style scoped>
-@import "@/assets/styles/styles.css";
+@import "@/assets/styles/components/components-styles.css";
 </style>

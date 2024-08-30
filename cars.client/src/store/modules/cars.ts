@@ -1,4 +1,4 @@
-import axios from '@/axiosConfig';
+import axios from '@/config/axiosConfig';
 import { ActionContext } from 'vuex';
 
 interface Car {
